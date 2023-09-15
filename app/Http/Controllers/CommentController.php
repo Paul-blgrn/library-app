@@ -9,13 +9,17 @@ use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
+    public function __construct() {
+        $this->authorizeResource(Comment::class, 'comment');
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         //
-        Auth::loginUsingId(1);
+        // Auth::loginUsingId(1);
         /** @var User $user */
         $user = auth()->user();
         return $user
@@ -42,7 +46,7 @@ class CommentController extends Controller
         $rules = [
             'user_id' => 'bail|required|integer',
             'book_id' => 'bail|required|integer',
-            'comment' => 'bail|required|',
+            'comment' => 'bail|required',
             'note' => 'bail|required|in:1,2,3,4,5',
         ];
         $this->validate($request, $rules);

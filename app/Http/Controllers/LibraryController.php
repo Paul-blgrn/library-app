@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Library;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ class LibraryController extends Controller
     public function index()
     {
         //
-        Auth::loginUsingId(1);
+        //Auth::loginUsingId(1);
 
         /** @var User $user */
         $user = auth()->user(); 
@@ -40,7 +41,6 @@ class LibraryController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $rules = [
             'user_id' => 'bail|required|integer',
             'published_book_id' => 'bail|required|integer',
@@ -78,7 +78,7 @@ class LibraryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update($id, Request $request, Library $library)
+    public function update($id, User $user, Request $request, Library $library)
     {
         //
         $rules = [
@@ -86,7 +86,7 @@ class LibraryController extends Controller
         ];
         $this->validate($request, $rules);
 
-        $library = Library::findOrFail($id);
+        $library = Library::findOrFail($library->id);
         $library->status = $request->input('status');;
 
         $library->save();

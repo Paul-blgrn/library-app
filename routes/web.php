@@ -6,8 +6,6 @@ use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\PublishedBookController;
 use Illuminate\Support\Facades\Route;
 
-use Illuminate\Support\Facades\Auth;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,8 +16,6 @@ use Illuminate\Support\Facades\Auth;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-//Auth::loginUsingId();
 
 Route::get('/', function () {
     return view('welcome');

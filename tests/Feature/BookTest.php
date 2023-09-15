@@ -9,8 +9,10 @@ use App\Models\Publisher;
 use function Pest\Laravel\delete;
 use function Pest\Laravel\deleteJson;
 
+// test route
 it('show published books')->get('api/')->assertStatus(200);
 
+// test creation of published books
 test('create random published books', function() {
     $publishedCount = mt_rand(1, 3);
     $response = Book::factory(10)
@@ -24,7 +26,7 @@ test('create random published books', function() {
     expect($response)->not()->toBeNull();
 });
 
-
+// test to publish a specific book
 test('create specific published book', function(){
     $book = Book::factory()->create();
     $publisher = Publisher::factory()->create();
@@ -40,6 +42,7 @@ test('create specific published book', function(){
     $response->assertRedirect("api/");
 });
 
+// select a specific published book
 test('select published book by id', function() {
     $selectBook = PublishedBook::factory()->create();
     $id = $selectBook->id;
@@ -50,6 +53,8 @@ test('select published book by id', function() {
     $response->assertStatus(200);
 });
 
+
+// update a published book
 test('update published book by id', function(){
     $book = Book::factory()->create();
     $publisher = Publisher::factory()->create();
@@ -66,14 +71,12 @@ test('update published book by id', function(){
     $response->assertRedirect("api/");
 });
 
-// test('', function(){
-
-// });
-
+// test delete
 test('guest cannot delete books', function() {
     deleteJson('api/book/del/1')->assertUnauthorized();
 });
 
+// test delete book
 test('delete published book by id', function(){
     $deleteBook = PublishedBook::factory()->create();
     $id = $deleteBook->id;
@@ -85,15 +88,3 @@ test('delete published book by id', function(){
 
     expect(PublishedBook::count())->toEqual(0);
 });
-
-// test('example', function () {
-//     $response = $this->get('/');
-
-//     $response->assertStatus(200);
-// });
-
-// it('show all books', function(){
-//     $response = $this->get('/api/books');
-
-//     expect($response->status())->toBe(200);
-// });

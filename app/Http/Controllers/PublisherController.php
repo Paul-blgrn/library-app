@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Publisher;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PublisherController extends Controller
@@ -12,7 +13,11 @@ class PublisherController extends Controller
      */
     public function index()
     {
-        //
+        $publisher = Publisher::all()
+            ->orderByDesc()
+            ->take(5)
+            ->paginate(5);
+        return $publisher;
     }
 
     /**
@@ -28,7 +33,15 @@ class PublisherController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'name' => 'bail|required|string|max:50',
+        ];
+        $this->validate($request, $rules);
+
+        $newPublisher = new Publisher();
+        $newPublisher->name = $request->input('name');
+        $newPublisher->save();
+        return new JsonResponse($newPublisher, JsonResponse::HTTP_CREATED);
     }
 
     /**
@@ -36,7 +49,7 @@ class PublisherController extends Controller
      */
     public function show(Publisher $publisher)
     {
-        //
+        return $publisher;
     }
 
     /**
@@ -44,7 +57,15 @@ class PublisherController extends Controller
      */
     public function edit(Publisher $publisher)
     {
-        //
+        $user = auth()->user();
+        $editPublisher = Publisher::findOrFail($publisher->id);
+        if($user->role === "editor" || $user->role === "admin") {
+            return view('edit_publisher', [
+                'author' => $editPublisher,
+            ]);
+        } else {
+            return redirect()->back();
+        }
     }
 
     /**
@@ -52,7 +73,17 @@ class PublisherController extends Controller
      */
     public function update(Request $request, Publisher $publisher)
     {
-        //
+        $rules = [
+            'name' => 'bail|required|string|max:50',
+        ];
+        $this->validate($request, $rules);
+
+        $updatePublisher = Publisher::findOrFail($publisher->id);
+
+        $updatePublisher->name = $request->input('name');
+        $updatePublisher->save();
+
+        return new JsonResponse($updatePublisher, JsonResponse::HTTP_OK);
     }
 
     /**
@@ -60,6 +91,9 @@ class PublisherController extends Controller
      */
     public function destroy(Publisher $publisher)
     {
-        //
+        $deletePublisher = Publisher::findOrFail($publisher->id);
+        $deletePublisher->delete();
+
+        return new JsonResponse($deletePublisher, JsonResponse::HTTP_OK);
     }
 }

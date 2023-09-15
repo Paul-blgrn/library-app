@@ -8,11 +8,22 @@ use Illuminate\Http\Request;
 
 class FormatController extends Controller
 {
+
+    public function __construct() {
+        $this->authorizeResource(Format::class, 'format');
+    }
+        
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        /** @var User $user */
+        $user = auth()->user();
+        // $this->authorize('viewAny', Format::class);
+        // abort_if($user->cannot('viewAny', Format::class), 403);
+        
         $format = Format::orderByDesc('id')
             ->take(5)
             ->simplePaginate(5);
@@ -24,7 +35,7 @@ class FormatController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**

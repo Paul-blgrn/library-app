@@ -13,6 +13,8 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
 
+use Illuminate\Support\Facades\Auth;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,58 +26,74 @@ use App\Http\Controllers\WishlistController;
 |
 */
 
+if(app()->environment() === 'local') {
+    Auth::loginUsingId(1);
+}
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// all unpublished books
+Route::middleware('auth')->group(function () {
+
+    // authors
+    Route::post('/author/create', [AuthorController::class, 'store']);
+    Route::put('/author/edit/{author}', [AuthorController::class, 'update']);
+    Route::delete('/author/delete/{author}', [AuthorController::class, 'destroy']);
+
+    // formats
+    Route::post('/format/add', [FormatController::class, 'store']);
+    Route::post('/format/edit/{format}', [FormatController::class, 'update']);
+    Route::delete('/format/del/{format}', [FormatController::class, 'destroy']);
+
+    // categories
+    Route::post('/categorie/add', [CategoryController::class, 'store']);
+    Route::post('/categorie/edit/{category}', [CategoryController::class, 'update']);
+    Route::delete('/categorie/del/{category}', [CategoryController::class, 'destroy']);
+
+    // unpublished books
+    Route::post('/script/add', [BookController::class, 'store']);
+    Route::post('/script/edit/{book}', [BookController::class, 'update']);
+    Route::delete('/script/del/{book}', [BookController::class, 'destroy']);
+
+    // published books
+    Route::post('/book/add', [PublishedBookController::class, 'store']);
+    Route::post('/book/edit/{id}', [PublishedBookController::class, 'update']);
+    Route::delete('/book/del/{id}', [PublishedBookController::class, 'destroy']);
+
+    // comments
+    Route::get('/comments', [CommentController::class, 'index']);
+    Route::post('/comment/add', [CommentController::class, 'store']);
+    Route::post('/comment/edit/{comment}', [CommentController::class, 'update']);
+    Route::delete('/comment/del/{comment}', [CommentController::class, 'destroy']);
+
+    // library
+    Route::get('/library', [LibraryController::class, 'index']);
+    Route::post('/library/add', [LibraryController::class, 'store']);
+    Route::post('/library/edit/{library}', [LibraryController::class, 'update']);
+    Route::delete('/library/del/{library}', [LibraryController::class, 'destroy']);
+
+    // wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index']);
+    Route::post('/wishlist/add', [WishlistController::class, 'store']);
+    Route::delete('/wishlist/del/{wishlist}', [WishlistController::class, 'destroy']);
+});
+
+// unpublished books
 Route::get('/scripts', [BookController::class, 'index']);
 Route::get('/script/{book}', [BookController::class, 'indexID']);
-Route::post('/script/add', [BookController::class, 'store']);
-Route::post('/script/edit/{book}', [BookController::class, 'update']);
-Route::delete('/script/del/{book}', [BookController::class, 'destroy']);
 
-// livres publiés
+// published books
 Route::get('/', [PublishedBookController::class, 'index']);
 Route::get('/book/{book}', [PublishedBookController::class, 'indexB']);
-Route::post('/book/add', [PublishedBookController::class, 'store']);
-Route::post('/book/edit/{id}', [PublishedBookController::class, 'update']);
-Route::delete('/book/del/{id}', [PublishedBookController::class, 'destroy'])->middleware('auth');
-
-
-// bibliothèques perso
-Route::get('/library', [LibraryController::class, 'index']);
-Route::post('/library/add', [LibraryController::class, 'store']);
-Route::post('/library/edit/{id}', [LibraryController::class, 'update']);
-Route::delete('/library/del/{library}', [LibraryController::class, 'destroy']);
-
-// wishlist perso
-Route::get('/wishlist', [WishlistController::class, 'index']);
-Route::post('/wishlist/add', [WishlistController::class, 'store']);
-Route::delete('/wishlist/del/{wishlist}', [WishlistController::class, 'destroy']);
 
 
 // categories
 Route::get('/categories', [CategoryController::class, 'index']);
-Route::post('/categorie/add', [CategoryController::class, 'store']);
-Route::post('/categorie/edit/{category}', [CategoryController::class, 'update']);
-Route::delete('/categorie/del/{category}', [CategoryController::class, 'destroy']);
 
 // format
 Route::get('/formats', [FormatController::class, 'index']);
-Route::post('/format/add', [FormatController::class, 'store']);
-Route::post('/format/edit/{format}', [FormatController::class, 'update']);
-Route::delete('/format/del/{format}', [FormatController::class, 'destroy']);
 
 // authors
 Route::get('/authors', [AuthorController::class, 'index']);
 Route::get('/author/{author}', [AuthorController::class, 'index_showauthor']);
-Route::post('/author/create', [AuthorController::class, 'store']);
-Route::put('/author/edit/{author}', [AuthorController::class, 'update']);
-Route::delete('/author/delete/{author}', [AuthorController::class, 'destroy']);
-
-// comments
-Route::get('/comments', [CommentController::class, 'index']);
-Route::post('/comment/add', [CommentController::class, 'store']);
-Route::post('/comment/edit/{comment}', [CommentController::class, 'update']);
-Route::delete('/comment/del/{comment}', [CommentController::class, 'destroy']);

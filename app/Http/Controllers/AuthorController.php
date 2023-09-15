@@ -16,9 +16,9 @@ class AuthorController extends Controller
     public function index()
     {
         $authors = Author::all()
-            ->take(5);
-
-        $authors = Author::where('id', '>', 0)->simplePaginate(5);
+            ->latest()
+            ->take(5)
+            ->paginate(5);
 
         return $authors;
     }

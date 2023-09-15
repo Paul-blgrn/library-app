@@ -12,7 +12,7 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="/api/books">
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Accueil') }}
                     </x-nav-link>
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
@@ -21,19 +21,19 @@
 
                     {{-- Si l'utilisateur est administrateur --}}
                     @if(Auth::user()->role == "admin")
-                        <x-nav-link :href="/api/books">
+                        <x-nav-link :href="route('dashboard')">
                             {{ __('Gestion des livres') }}
                         </x-nav-link>
-                        <x-nav-link :href="/api/books">
+                        <x-nav-link :href="route('dashboard')">
                             {{ __('Gestion Publications') }}
                         </x-nav-link>
                     @endif
 
                     @if(Auth::user()->role == "admin" || Auth::user()->role == "editor")
-                        <x-nav-link :href="/api/books">
+                        <x-nav-link :href="route('dashboard')">
                             {{ __('Publier un livre') }}
                         </x-nav-link>
-                        <x-nav-link :href="/api/books">
+                        <x-nav-link :href="route('dashboard')">
                             {{ __('Gestion des auteurs') }}
                         </x-nav-link>
                     @endif
